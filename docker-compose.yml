@@ -1,0 +1,54 @@
+services:
+  zadostno-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: zadostno-app
+    ports:
+      - "8727:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+      - DB_HOST=zadostno-postgres
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      zadostno-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - zadostno-logs:/var/log/apache2
+    networks:
+      - zadostno-network
+
+  zadostno-postgres:
+    image: postgres:15-alpine
+    container_name: zadostno-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - zadostno-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zadostno-network
+
+volumes:
+  zadostno-postgres-data:
+    driver: local
+  zadostno-logs:
+    driver: local
+
+networks:
+  zadostno-network:
+    driver: bridge
