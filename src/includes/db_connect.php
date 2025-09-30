@@ -1,19 +1,14 @@
 <?php
-// Database connection
-$host = 'localhost';
-$db   = 'zadostno';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
+// This script connects to the PostgreSQL database.
+require_once __DIR__ . '/../../config.php';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+
+    // Set the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
+    // For development, show the error. In production, log it and show a generic message.
+    die("ERROR: Could not connect. " . $e->getMessage());
 }
