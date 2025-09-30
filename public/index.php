@@ -11,11 +11,16 @@ $page = $_GET['page'] ?? 'login'; // Default to login page
 // --- Handle Actions (Form Submissions) ---
 $action = $_GET['action'] ?? null;
 if ($action) {
-    // Here you would handle form submissions, e.g., login, register
-    // For example:
-    // if ($action === 'do_login') { require __DIR__ . '/../src/actions/login_handler.php'; }
-    // We will build this out later.
+    // Look for the corresponding action handler in the src/actions/ directory
+    $actionPath = __DIR__ . '/../src/actions/' . $action . '_handler.php';
+
+    if (file_exists($actionPath)) {
+        require $actionPath;
+        // The handler script will typically end with an exit() or header() call,
+        // so the script might stop here.
+    }
 }
+
 
 // --- Load Page Content ---
 $pagePath = __DIR__ . '/../src/pages/' . $page . '.php';
