@@ -9,7 +9,7 @@ function getDatabaseConnection() {
     $dbname = getenv('DB_NAME') ?: 'zadostno_db';
     $user = getenv('DB_USER') ?: 'zadostno_user';
     $password = getenv('DB_PASSWORD');
-    
+
     try {
         $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_URI'] === '/health') {
 <body>
     <div class="container">
         <h1>🚀 Zadostno is Running!</h1>
-        
+
         <div class="status info">
             <strong>Service Status:</strong> ✅ Web server is running<br>
             <strong>PHP Version:</strong> <?= PHP_VERSION ?><br>
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_URI'] === '/health') {
         $db = getDatabaseConnection();
         if ($db) {
             echo '<div class="status success"><strong>Database:</strong> ✅ Connected to PostgreSQL</div>';
-            
+
             // Test query
             try {
                 $stmt = $db->query("SELECT version()");
@@ -80,7 +80,6 @@ if ($_SERVER['REQUEST_URI'] === '/health') {
         <ul>
             <li><a href="/">/</a> - This page</li>
             <li><a href="/health">/health</a> - JSON health check</li>
-            <li><a href="/test.php">/test.php</a> - PHP info page</li>
         </ul>
 
         <h2>Server Information:</h2>
