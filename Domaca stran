@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Domaca stran</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1em 0;
+            text-align: center;
+        }
+        nav {
+            background: #444;
+            padding: 0.5em 0;
+            text-align: center;
+        }
+        main {
+            flex: 1;
+            padding: 2em;
+            background: #fff;
+            max-width: 900px;
+            margin: 2em auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+            width: 100%;
+            position: relative;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h1 style="margin: 0;">Domaca stran</h1>
+            <div>
+                <button style="margin-left: 10px;">Orodje 1</button>
+                <button style="margin-left: 10px;">Orodje 2</button>
+                <button style="margin-left: 10px;">Orodje 3</button>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <!-- Navigation links go here -->
+    </nav>
+    <main>
+        <!-- Main content goes here -->
+    </main>
+    <footer>
+        <p>&copy; 2024 Domaca stran</p>
+    </footer>
+</body>
+</html>
