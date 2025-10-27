@@ -1,7 +1,14 @@
 <?php
-// Simple authentication check
-session_start();
+// Start the session if it's not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if the user_id is NOT set in the session
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/index.php');
+    // If not logged in, set an error message and redirect to login page
+    $_SESSION['error_message'] = 'You must be logged in to view this page.';
+    header('Location: /login.php');
     exit();
 }
+?>

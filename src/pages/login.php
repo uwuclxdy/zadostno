@@ -1,4 +1,14 @@
-<?php require_once __DIR__ . '/../templates/header.php'; ?>
+<?php 
+require_once __DIR__ . '/../templates/header.php'; 
+
+// Check if there is an error message in the session
+$error_message = null;
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    // Unset the error message so it doesn't show again on refresh
+    unset($_SESSION['error_message']);
+}
+?>
 
 <div class="row justify-content-center">
     <div class="col-md-5">
@@ -7,6 +17,13 @@
                 <h3 class="text-center">Login</h3>
             </div>
             <div class="card-body">
+
+                <?php if ($error_message): ?>
+                    <div class="alert alert-danger">
+                        <?php echo htmlspecialchars($error_message); ?>
+                    </div>
+                <?php endif; ?>
+
                 <form action="/actions/login_handler.php" method="post">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>

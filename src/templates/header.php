@@ -24,13 +24,26 @@ if (session_status() == PHP_SESSION_NONE) {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <!-- Navigation will be added here later -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="/login.php">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/register.php">Register</a>
-                        </li>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <!-- Show these links if the user IS logged in -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="/dashboard.php">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/profile.php">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout.php">Logout</a>
+                            </li>
+                        <?php else: ?>
+                            <!-- Show these links if the user IS NOT logged in -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login.php">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/register.php">Register</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
