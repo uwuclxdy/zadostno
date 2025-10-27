@@ -1,13 +1,14 @@
 <?php 
 require_once __DIR__ . '/../templates/header.php'; 
 
-// Check if there is an error message in the session
-$error_message = null;
-if (isset($_SESSION['error_message'])) {
-    $error_message = $_SESSION['error_message'];
-    // Unset the error message so it doesn't show again on refresh
-    unset($_SESSION['error_message']);
-}
+// --- Get any error or success messages from the session ---
+$error_message = $_SESSION['error_message'] ?? null;
+$success_message = $_SESSION['success_message'] ?? null;
+
+// Clear them from the session so they don't persist
+unset($_SESSION['error_message']);
+unset($_SESSION['success_message']);
+// ---------------------------------------------------------
 ?>
 
 <div class="row justify-content-center">
@@ -24,7 +25,14 @@ if (isset($_SESSION['error_message'])) {
                     </div>
                 <?php endif; ?>
 
+                <?php if ($success_message): ?>
+                    <div class="alert alert-success">
+                        <?php echo htmlspecialchars($success_message); ?>
+                    </div>
+                <?php endif; ?>
+
                 <form action="/actions/login_handler.php" method="post">
+                    <!-- ... rest of the form is the same ... -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
                         <input type="email" class="form-control" id="email" name="email" required>
