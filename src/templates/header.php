@@ -34,6 +34,18 @@ require_once __DIR__ . '/../includes/functions.php';
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo base_url('/profile.php'); ?>">Profile</a>
                             </li>
+
+                                   <?php if ($_SESSION['role'] === 'admin'): ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Admin
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="#">Manage Users</a></li>
+                    <li><a class="dropdown-item" href="<?php echo base_url('/admin/courses.php'); ?>">Manage Courses</a></li>
+                </ul>
+            </li>
+            <?php endif; ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo base_url('/logout.php'); ?>">Logout</a>
                             </li>
