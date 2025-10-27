@@ -1,7 +1,44 @@
-/* Main stylesheet for zadostno */
+/* Basic Styles */
 body {
-    font-family: Arial, sans-serif;
-    background: #f8f9fa;
-    margin: 0;
-    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa; /* A very light silver */
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar-dark.bg-dark-blue {
+    background-color: #001f3f; /* Navy Blue */
+}
+
+/* Cards */
+.card-header {
+    background-color: #001f3f; /* Navy Blue */
+    color: #ffffff; /* White text */
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #001f3f; /* Navy Blue */
+    border-color: #001f3f;
+}
+
+.btn-primary:hover {
+    background-color: #003366; /* Darker Navy */
+    border-color: #003366;
+}
+
+/* Main content wrapper */
+main {
+    flex-grow: 1;
+}
+
+/* Footer */
+footer {
+    background-color: #e9ecef;
+    padding: 1rem 0;
+    font-size: 0.9em;
+    color: #6c757d;
 }
