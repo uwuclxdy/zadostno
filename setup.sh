@@ -97,7 +97,8 @@ echo "   Database: zadostno_db"
 echo "   Username: zadostno_user"
 echo "   Password: $DB_PASSWORD"
 echo ""
-read -p "Press Enter to open .env for editing..."
+printf "Press Enter to open .env for editing..."
+read -r
 
 # Open editor (tries in order: nano, vim, vi)
 if command -v nano &> /dev/null; then
