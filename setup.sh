@@ -1,10 +1,10 @@
 #!/bin/bash
-# Zadostno Setup Script - Simple version
-# Run this from your home directory: bash setup.sh
+# Zadostno Setup Script
+# Run this from home directory on server
 
-set -e  # Exit on any error
+set -e  # Exit on error
 
-echo "🚀 Zadostno Setup"
+echo "🚀 Zadostno setup"
 echo "================="
 echo ""
 
@@ -25,14 +25,14 @@ if [ "$(pwd)" != "$HOME" ]; then
 fi
 
 echo "📁 Working from: $(pwd)"
-echo "📦 Target directory: $PROJECT_DIR"
+echo "📦 Install directory: $PROJECT_DIR"
 echo "🔗 Repository: $REPO_URL"
 echo ""
 
 # Check if directory already exists
 if [ -d "$PROJECT_DIR" ]; then
     echo "⚠️  Directory $PROJECT_DIR already exists!"
-    read -p "Delete and recreate? (y/n) " -n 1 -r
+    read -pr "Delete and recreate? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "🗑️  Removing existing directory..."
@@ -90,18 +90,14 @@ EOF
 
 chmod 600 .env
 
-echo "✅ .env file created with generated password"
+echo "✅ .env file created"
 echo ""
 echo "🔐 Generated Credentials:"
 echo "   Database: zadostno_db"
 echo "   Username: zadostno_user"
 echo "   Password: $DB_PASSWORD"
 echo ""
-echo "📝 Opening .env for editing..."
-echo "   Review and modify settings if needed"
-echo "   Save and close the editor to continue"
-echo ""
-read -p "Press Enter to open editor..."
+read -pr "Press Enter to open .env for editing..."
 
 # Open editor (tries in order: nano, vim, vi)
 if command -v nano &> /dev/null; then
@@ -113,61 +109,38 @@ elif command -v vi &> /dev/null; then
 else
     echo "⚠️  No editor found. Continuing with generated .env"
     echo "   You can edit it later: nano ~/zadostno/.env"
-    read -p "Press Enter to continue..."
+    read -pr "Press Enter to continue..."
 fi
 
 echo ""
-echo "✅ Configuration complete"
+echo "✅ Configuration done"
 echo ""
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
     echo "❌ Docker is not installed"
-    echo ""
-    echo "Please install Docker first:"
-    echo "  curl -fsSL https://get.docker.com -o get-docker.sh"
-    echo "  sudo sh get-docker.sh"
-    echo "  sudo usermod -aG docker \$USER"
-    echo ""
-    echo "Then logout, login again, and run this script again"
     exit 1
 fi
 
 if ! command -v docker-compose &> /dev/null; then
     echo "❌ Docker Compose is not installed"
-    echo ""
-    echo "Please install Docker Compose first:"
-    echo "  sudo curl -L \"https://github.com/docker/compose/releases/latest/download/docker-compose-\$(uname -s)-\$(uname -m)\" -o /usr/local/bin/docker-compose"
-    echo "  sudo chmod +x /usr/local/bin/docker-compose"
-    echo ""
-    echo "Then run this script again"
     exit 1
 fi
 
 # Check if user can run docker without sudo
 if ! docker ps >/dev/null 2>&1; then
-    echo "⚠️  Cannot run Docker without sudo"
-    echo ""
-    echo "Your user is not in the docker group. Run:"
-    echo "  sudo usermod -aG docker \$USER"
-    echo ""
-    echo "Then LOGOUT and login again, then run this script again"
+    echo "⚠️  Cannot run Docker without sudo (run sudo usermod -aG docker \$USER)"
     exit 1
 fi
 
 # Build and start containers
 echo "🐳 Building Docker containers..."
-echo "   This may take a few minutes on first run..."
+echo "   This may take a few minutes..."
 echo ""
 
 if ! docker-compose up -d --build; then
     echo ""
     echo "❌ Failed to start containers"
-    echo ""
-    echo "Common issues:"
-    echo "  - Port already in use (change ports in .env)"
-    echo "  - Docker daemon not running (sudo systemctl start docker)"
-    echo "  - Permission issues (check Docker group membership)"
     echo ""
     echo "Check logs with: cd ~/zadostno && docker-compose logs"
     exit 1
@@ -175,7 +148,6 @@ fi
 
 echo ""
 echo "⏳ Waiting for containers to start..."
-echo "   Database initialization may take 20-30 seconds..."
 sleep 25
 
 # Health check
@@ -187,7 +159,6 @@ ATTEMPT=0
 
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     if curl -f -s "$HEALTH_URL" >/dev/null 2>&1; then
-        echo "✅ Application is healthy!"
         break
     fi
     ATTEMPT=$((ATTEMPT + 1))
@@ -221,30 +192,41 @@ echo "   Health Check: http://localhost:$APP_PORT/health"
 echo ""
 echo "💾 Database Connection:"
 echo "   Host: localhost"
-echo "   Port: $POSTGRES_EXTERNAL_PORT"
+echo "   Postgres port: $POSTGRES_EXTERNAL_PORT"
 echo "   Database: zadostno_db"
 echo "   Username: zadostno_user"
 echo "   Password: (stored in ~/zadostno/.env)"
 echo ""
 echo "📁 Project Location: $PROJECT_DIR"
 echo ""
-echo "🛠️ Useful Commands:"
-echo "   cd ~/zadostno                              # Go to project"
-echo "   docker-compose ps                          # Check status"
-echo "   docker-compose logs -f                     # Follow logs"
-echo "   docker-compose restart                     # Restart containers"
-echo "   docker-compose down                        # Stop containers"
-echo "   docker-compose up -d --build               # Rebuild and start"
-echo ""
 echo "📥 Update from GitHub:"
 echo "   cd ~/zadostno && git pull"
 echo "   docker-compose down && docker-compose up -d --build"
 echo ""
-echo "🔧 Useful Scripts in ~/zadostno:"
-echo "   ./zadostno-status.sh                       # Check status"
-echo "   ./zadostno-logs.sh                         # View logs"
-echo "   ./zadostno-restart.sh                      # Restart app"
-echo "   ./deploy.sh                                # Deploy updates"
+echo "🔧 Scripts:"
+echo "   ./zadostno-status.sh              # Check status"
+echo "   ./zadostno-logs.sh                # View logs"
+echo "   ./zadostno-restart.sh             # Restart app"
+echo "   ./deploy.sh                       # Deploy updates"
 echo ""
-echo "📖 For more information, see SERVER_SETUP.md in the project"
+
+echo "🔄 Automatic Updates"
+echo "   Enable auto-updates (pulls from GitHub every minute):"
+echo ""
+
+read -p "Would you like to enable automatic updates now? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "🔄 Setting up automatic updates..."
+    if [ -f "$PROJECT_DIR/zadostno-autoupdate.sh" ]; then
+        bash "$PROJECT_DIR/zadostno-autoupdate.sh"
+        echo ""
+        echo "✅ Automatic updates enabled!"
+        echo "   Check status: sudo systemctl status zadostno-update.timer"
+    else
+        echo "⚠️  zadostno-autoupdate.sh not found in $PROJECT_DIR"
+        echo "   You can run it manually later once it's available"
+    fi
+fi
 echo ""
