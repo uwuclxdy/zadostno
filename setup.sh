@@ -75,7 +75,7 @@ fi
 
 # Generate secure password
 echo "🔐 Generating secure database password..."
-DB_PASSWORD=$(openssl rand -base64 24)
+DB_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 32 | head -n 1)
 
 # Create .env file if it doesn't exist
 if [ -f ".env" ]; then
