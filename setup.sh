@@ -32,7 +32,7 @@ echo ""
 # Check if directory already exists
 if [ -d "$PROJECT_DIR" ]; then
     echo "⚠️  Directory $PROJECT_DIR already exists!"
-    read -pr "Delete and recreate? (y/n) " -n 1 -r
+    read -p "Delete and recreate? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "🗑️  Removing existing directory..."
@@ -97,7 +97,7 @@ echo "   Database: zadostno_db"
 echo "   Username: zadostno_user"
 echo "   Password: $DB_PASSWORD"
 echo ""
-read -pr "Press Enter to open .env for editing..."
+read -p "Press Enter to open .env for editing..."
 
 # Open editor (tries in order: nano, vim, vi)
 if command -v nano &> /dev/null; then
@@ -109,7 +109,7 @@ elif command -v vi &> /dev/null; then
 else
     echo "⚠️  No editor found. Continuing with generated .env"
     echo "   You can edit it later: nano ~/zadostno/.env"
-    read -pr "Press Enter to continue..."
+    read -p "Press Enter to continue..."
 fi
 
 echo ""
