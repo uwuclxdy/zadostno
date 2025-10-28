@@ -1,6 +1,6 @@
 #!/bin/bash
 # Zadostno Setup Script
-# Run this from an empty directory: ~/zadostno
+# Run this from your home directory: ~/setup.sh
 
 set -e  # Exit on any error
 
@@ -12,39 +12,35 @@ echo ""
 GITHUB_REPO="https://github.com/uwuclxdy/zadostno.git"
 POSTGRES_EXTERNAL_PORT=5433
 APP_PORT=8727
+INSTALL_DIR="$HOME/zadostno"
 
-# Verify directory is empty or only contains .git
-if [ "$(ls -A | grep -v '^\.git$' | wc -l)" -gt 0 ]; then
-    echo "⚠️  Warning: Directory is not empty!"
-    echo "This script should be run from an empty directory."
-    echo ""
-    ls -la
-    echo ""
-    read -p "Do you want to continue anyway? This may overwrite files (y/n): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
-fi
-
-echo "📍 Working directory: $(pwd)"
+echo "📍 Current directory: $(pwd)"
 echo "📦 GitHub repository: $GITHUB_REPO"
+echo "📁 Installation directory: $INSTALL_DIR"
 echo "🐘 PostgreSQL port: $POSTGRES_EXTERNAL_PORT"
 echo "🌐 Application port: $APP_PORT"
 echo ""
 
-# Clone repository
-echo "📥 Cloning repository from GitHub..."
-if [ -d ".git" ]; then
-    echo "Git repository already exists, pulling latest changes..."
-    git pull origin main || git pull origin master
+# Check if we're already in the zadostno directory
+if [ "$(pwd)" = "$INSTALL_DIR" ]; then
+    echo "⚠️  You're already in the zadostno directory!"
+    echo "This script should be run from your home directory."
+    echo ""
+    read -p "Continue anyway and set up in current directory? (y/n): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Please run this script from your home directory:"
+        echo "  cd ~"
+        echo "  ./setup.sh"
+        exit 1
+    fi
 else
-    echo "Cloning fresh repository..."
-    git clone "$GITHUB_REPO" .
-fi
+    # Create zadostno directory if it doesn't exist
+    if [ -d "$INSTALL_DIR" ]; then
+        echo "📁 Directory $INSTALL_DIR already exists"
 
-echo "✅ Repository cloned successfully"
-echo ""
+        # Check if it's empty
+        if [ "$(ls -A $INSTALL_DIR | grep -v '^\.git
 
 # Check if required files exist
 echo "🔍 Checking repository structure..."
@@ -73,7 +69,7 @@ if [ ${#MISSING_FILES[@]} -gt 0 ]; then
     fi
 fi
 
-# Generate secure password
+# Generate secure password (alphanumeric only)
 echo "🔐 Generating secure database password..."
 DB_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 32 | head -n 1)
 
@@ -347,4 +343,27 @@ fi
 
 echo ""
 echo "🎊 Zadostno is ready to use!"
-echo ""
+echo "" | wc -l)" -gt 0 ]; then
+            echo "⚠️  Directory is not empty!"
+            ls -la "$INSTALL_DIR"
+            echo ""
+            read -p "Do you want to remove it and start fresh? (y/n): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                echo "🗑️  Removing existing directory..."
+                rm -rf "$INSTALL_DIR"
+                mkdir -p "$INSTALL_DIR"
+            else
+                echo "Continuing with existing directory..."
+            fi
+        fi
+    else
+        echo "📁 Creating directory: $INSTALL_DIR"
+        mkdir -p "$INSTALL_DIR"
+    fi
+
+    # Navigate to installation directory
+    cd "$INSTALL_DIR"
+    echo "📂 Switched to: $(pwd)"
+    echo ""
+fi
