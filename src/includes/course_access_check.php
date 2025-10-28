@@ -48,3 +48,12 @@ function check_course_access($pdo, $course_id) {
     header('Location: ' . base_url('/dashboard.php'));
     exit();
 }
+// Add this new function at the end of the file
+function is_course_teacher($pdo, $course_id, $user_id) {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher') {
+        return false;
+    }
+    $stmt = $pdo->prepare("SELECT 1 FROM course_teachers WHERE course_id = ? AND teacher_id = ?");
+    $stmt->execute([$course_id, $user_id]);
+    return $stmt->fetch() !== false;
+}
