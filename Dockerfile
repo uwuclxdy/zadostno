@@ -12,10 +12,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache rewrite module
-RUN a2enmod rewrite
+# Enable Apache modules
+RUN a2enmod rewrite headers
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>\n\
@@ -30,21 +31,16 @@ RUN echo '<VirtualHost *:80>\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Create entrypoint script to fix permissions at runtime
+# Create entrypoint script to fix permissions
 RUN echo '#!/bin/bash\n\
 chown -R www-data:www-data /var/www/html\n\
 chmod -R 755 /var/www/html\n\
 exec apache2-foreground' > /entrypoint.sh && chmod +x /entrypoint.sh
 
-# Set working directory
 WORKDIR /var/www/html
-
-# Expose port
 EXPOSE 80
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
-# Use custom entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

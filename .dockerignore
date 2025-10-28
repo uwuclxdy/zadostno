@@ -6,5 +6,8 @@ Dockerfile
 .dockerignore
 .env
 .env.example
-node_modules
 *.log
+zadostno-*.sh
+deploy.sh
+monitor.sh
+setup.sh

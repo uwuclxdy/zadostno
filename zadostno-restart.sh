@@ -1,10 +1,11 @@
 #!/bin/bash
-echo "Restarting..."
-cd /home/uwuclxdy/zadostno
+echo "🔄 Restarting Zadostno..."
+cd "$(dirname "$0")"
 
 docker-compose restart
 
+echo "⏳ Waiting for restart..."
 sleep 10
 
-echo "Restarted ig. Check status:"
+echo "✅ Restart complete"
 ./zadostno-status.sh

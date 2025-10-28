@@ -1,28 +1,43 @@
 #!/bin/bash
-echo "Status Check"
+echo "🔍 Zadostno Status"
+echo "=================="
+echo ""
 
-cd /home/uwuclxdy/zadostno
+cd "$(dirname "$0")"
 
-echo "Container list:"
+echo "📦 Containers:"
 docker-compose ps
 echo ""
 
-echo "Health Check:"
-if curl -s http://localhost:8727/health 2>/dev/null; then
-    echo "responding on port 8727"
+APP_PORT=$(grep APP_PORT .env | cut -d '=' -f2)
+APP_PORT=${APP_PORT:-8727}
+
+echo "🏥 Health Check:"
+if curl -s http://localhost:$APP_PORT/health 2>/dev/null | jq . 2>/dev/null; then
+    echo "✅ Application responding on port $APP_PORT"
 else
-    echo "not responding x/"
+    echo "❌ Application not responding"
 fi
 echo ""
 
-echo "DB Status:"
+echo "💾 Database Status:"
 if docker-compose exec -T zadostno-postgres pg_isready -U zadostno_user -d zadostno_db >/dev/null 2>&1; then
-    echo "PostgreSQL ready"
+    echo "✅ PostgreSQL is ready"
 else
-    echo "PostgreSQL not ready"
+    echo "❌ PostgreSQL not ready"
 fi
 echo ""
 
-echo "Resources:"
+echo "📊 Resource Usage:"
 docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 echo ""
+
+POSTGRES_PORT=$(grep POSTGRES_PORT .env | cut -d '=' -f2)
+POSTGRES_PORT=${POSTGRES_PORT:-5433}
+
+echo "🌐 Access URLs:"
+echo "   Application: http://localhost:$APP_PORT"
+echo "   Database: localhost:$POSTGRES_PORT"
+echo ""
+
+echo "📁 Working Directory: $(pwd)"
